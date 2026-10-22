@@ -61,6 +61,7 @@ dependencies {
     // Ubicación
     implementation("com.google.android.gms:play-services-location:21.4.0")
     // Mapbox
-    implementation("com.mapbox.maps:android:11.31.11")
-    implementation("com.mapbox.extension:maps-compose:11.31.11")
+    implementation("com.mapbox.maps:android:11.31.0")
+    implementation("com.mapbox.extension:maps-compose:11.31.0")
+
 }
