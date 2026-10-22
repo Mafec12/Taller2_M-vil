@@ -51,11 +51,16 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
     // Camara con CameraX
     implementation("androidx.camera:camera-core:1.6.2")
     implementation("androidx.camera:camera-camera2:1.6.2")
     implementation("androidx.camera:camera-lifecycle:1.6.2")
     implementation("androidx.camera:camera-view:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
-
+    // Ubicación
+    implementation("com.google.android.gms:play-services-location:21.4.0")
+    // Mapbox
+    implementation("com.mapbox.maps:android:11.31.11")
+    implementation("com.mapbox.extension:maps-compose:11.31.11")
 }

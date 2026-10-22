@@ -1,3 +1,4 @@
+
 pluginManagement {
     repositories {
         google {
@@ -11,17 +12,37 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+
     repositories {
         google()
         mavenCentral()
+
+        // Repositorio de Mapbox
+
+        maven {
+            url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
+
+            credentials {
+                username = "mapbox"
+                password = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN")
+                    .orElse("")
+                    .get()
+            }
+
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+
     }
 }
 
 rootProject.name = "Taller2movil"
 include(":app")
- 

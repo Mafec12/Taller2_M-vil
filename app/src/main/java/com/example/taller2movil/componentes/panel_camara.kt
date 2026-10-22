@@ -1,4 +1,3 @@
-
 package com.example.taller2movil.componentes
 
 import android.net.Uri

@@ -1,3 +1,4 @@
+
 package com.example.taller2movil.componentes
 
 import androidx.compose.foundation.background
@@ -27,6 +28,9 @@ import androidx.compose.ui.unit.dp
 fun PanelMapa(
     rutaIniciada: Boolean,
     cantidadFotos: Int,
+    latitud: Double?,
+    longitud: Double?,
+    mensajeUbicacion: String,
     alIniciar: () -> Unit,
     alLimpiar: () -> Unit,
     modifier: Modifier = Modifier
@@ -34,46 +38,89 @@ fun PanelMapa(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
     ) {
-        Column(Modifier.fillMaxSize().padding(12.dp)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+        ) {
             Text(
                 "Mapa de la ruta",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
+
             Spacer(Modifier.height(10.dp))
+
             Box(
-                modifier = Modifier.weight(1f).fillMaxWidth().background(
-                    Color(0xFFF8E8F0), RoundedCornerShape(12.dp)
-                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .background(
+                        Color(0xFFF8E8F0),
+                        RoundedCornerShape(12.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("📍", style = MaterialTheme.typography.headlineLarge)
-                    Text("Aquí se mostrará el mapa")
+                Column(
+                    horizontalAlignment =
+                        Alignment.CenterHorizontally
+                ) {
                     Text(
-                        if (rutaIniciada) "Ruta iniciada" else "Esperando inicio de ruta",
+                        "📍",
+                        style =
+                            MaterialTheme.typography.headlineLarge
+                    )
+
+                    Text("Mapa pendiente de integrar")
+
+                    Text(
+                        mensajeUbicacion,
                         color = Color.DarkGray
                     )
+
+                    if (latitud != null && longitud != null) {
+                        Spacer(Modifier.height(8.dp))
+
+                        Text(
+                            "Latitud: %.6f".format(latitud)
+                        )
+
+                        Text(
+                            "Longitud: %.6f".format(longitud)
+                        )
+                    }
                 }
             }
+
             Spacer(Modifier.height(10.dp))
+
             Text("Fotos registradas: $cantidadFotos")
+
             Spacer(Modifier.height(8.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement =
+                    Arrangement.spacedBy(8.dp)
             ) {
                 Button(
                     onClick = alIniciar,
                     modifier = Modifier.weight(1f),
                     enabled = !rutaIniciada
-                ) { Text("Iniciar ruta") }
+                ) {
+                    Text("Iniciar ruta")
+                }
+
                 Button(
                     onClick = alLimpiar,
                     modifier = Modifier.weight(1f)
-                ) { Text("Limpiar") }
+                ) {
+                    Text("Limpiar")
+                }
             }
         }
     }

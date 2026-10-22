@@ -117,7 +117,14 @@ fun guardarFoto(
                         contexto, "¡Foto guardada en la galería!",
                         Toast.LENGTH_SHORT
                     ).show()
-                    alGuardar(Foto(nombre = nombre, uri = uri.toString()))
+                    alGuardar(
+                        Foto(
+                            nombre = nombre,
+                            uri = uri.toString(),
+                            latitud = 0.0,
+                            longitud = 0.0
+                        )
+                    )
                 } else {
                     Toast.makeText(
                         contexto, "No se obtuvo la URI de la foto",
