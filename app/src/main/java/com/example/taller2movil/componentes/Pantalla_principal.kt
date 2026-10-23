@@ -1,4 +1,3 @@
-
 package com.example.taller2movil.componentes
 
 import android.location.Location
@@ -71,15 +70,17 @@ fun PantallaPrincipal() {
     }
 
     fun iniciarRuta() {
-        val permisoFino = ContextCompat.checkSelfPermission(
-            contexto,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+        val permisoFino =
+            ContextCompat.checkSelfPermission(
+                contexto,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
 
-        val permisoAproximado = ContextCompat.checkSelfPermission(
-            contexto,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+        val permisoAproximado =
+            ContextCompat.checkSelfPermission(
+                contexto,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
 
         if (!permisoFino && !permisoAproximado) {
             Toast.makeText(
@@ -93,7 +94,6 @@ fun PantallaPrincipal() {
         rutaIniciada = true
         mensajeUbicacion = "Obteniendo ubicación..."
 
-        // Obtener una primera ubicación
         servicioUbicacion.obtenerUbicacion { ubicacion ->
             if (ubicacion != null) {
                 ubicacionActual = ubicacion
@@ -105,7 +105,6 @@ fun PantallaPrincipal() {
             }
         }
 
-        // Comenzar el seguimiento
         seguimiento.iniciar(
             alRecibirUbicacion = { ubicacion ->
                 ubicacionActual = ubicacion
@@ -148,9 +147,10 @@ fun PantallaPrincipal() {
         ) {
             val mapa: @Composable (Modifier) -> Unit =
                 { mod ->
+
                     PanelMapa(
                         rutaIniciada = rutaIniciada,
-                        cantidadFotos = fotos.size,
+                        fotos = fotos,
                         latitud = ubicacionActual?.latitude,
                         longitud = ubicacionActual?.longitude,
                         mensajeUbicacion = mensajeUbicacion,
@@ -165,6 +165,8 @@ fun PantallaPrincipal() {
                     PanelCamara(
                         fotos = fotos,
                         camaraFrontal = camaraFrontal,
+                        latitud = ubicacionActual?.latitude,
+                        longitud = ubicacionActual?.longitude,
                         alTomarFoto = { foto ->
                             fotos.add(foto)
                         },

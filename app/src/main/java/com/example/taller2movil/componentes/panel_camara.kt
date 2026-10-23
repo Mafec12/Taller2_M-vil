@@ -42,6 +42,8 @@ import com.example.taller2movil.datos.Foto
 fun PanelCamara(
     fotos: List<Foto>,
     camaraFrontal: Boolean,
+    latitud: Double?,
+    longitud: Double?,
     alTomarFoto: (Foto) -> Unit,
     alCambiarCamara: () -> Unit,
     modifier: Modifier = Modifier
@@ -99,7 +101,8 @@ fun PanelCamara(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement =
+                    Arrangement.spacedBy(8.dp)
             ) {
                 Button(
                     onClick = {
@@ -107,8 +110,10 @@ fun PanelCamara(
 
                         if (captura != null && capturaLista) {
                             guardarFoto(
-                                contexto,
-                                captura
+                                contexto = contexto,
+                                imageCapture = captura,
+                                latitud = latitud,
+                                longitud = longitud
                             ) { foto ->
                                 alTomarFoto(foto)
                             }
@@ -174,7 +179,9 @@ fun PanelCamara(
                                     ImageView(context).apply {
                                         scaleType =
                                             ImageView.ScaleType.CENTER_CROP
-                                        setImageURI(Uri.parse(foto.uri))
+                                        setImageURI(
+                                            Uri.parse(foto.uri)
+                                        )
                                     }
                                 },
                                 update = { imageView ->
@@ -182,8 +189,10 @@ fun PanelCamara(
                                         Uri.parse(foto.uri)
                                     )
                                 },
-                                modifier = Modifier
-                                    .size(90.dp, 82.dp)
+                                modifier = Modifier.size(
+                                    90.dp,
+                                    82.dp
+                                )
                             )
 
                             Spacer(

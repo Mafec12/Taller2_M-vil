@@ -37,38 +37,61 @@ fun VistaCamara(
         val previewView = remember {
             PreviewView(contexto).apply {
                 scaleType = PreviewView.ScaleType.FILL_CENTER
-                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                implementationMode =
+                    PreviewView.ImplementationMode.COMPATIBLE
             }
         }
 
         DisposableEffect(camaraFrontal, ciclo) {
-            val providerFuture = ProcessCameraProvider.getInstance(contexto)
-            val executor = ContextCompat.getMainExecutor(contexto)
+            val providerFuture =
+                ProcessCameraProvider.getInstance(contexto)
+
+            val executor =
+                ContextCompat.getMainExecutor(contexto)
 
             providerFuture.addListener({
                 try {
                     val provider = providerFuture.get()
+
                     val selector = CameraSelector.Builder()
                         .requireLensFacing(
-                            if (camaraFrontal) CameraSelector.LENS_FACING_FRONT
-                            else CameraSelector.LENS_FACING_BACK
+                            if (camaraFrontal)
+                                CameraSelector.LENS_FACING_FRONT
+                            else
+                                CameraSelector.LENS_FACING_BACK
                         )
                         .build()
 
-                    val preview = Preview.Builder().build().also {
-                        it.surfaceProvider = previewView.surfaceProvider
-                    }
+                    val preview = Preview.Builder()
+                        .build()
+                        .also {
+                            it.surfaceProvider =
+                                previewView.surfaceProvider
+                        }
+
                     val capture = ImageCapture.Builder()
-                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                        .setCaptureMode(
+                            ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
+                        )
                         .build()
 
                     provider.unbindAll()
-                    provider.bindToLifecycle(ciclo, selector, preview, capture)
+
+                    provider.bindToLifecycle(
+                        ciclo,
+                        selector,
+                        preview,
+                        capture
+                    )
+
                     alPrepararCaptura(capture)
+
                 } catch (error: Exception) {
                     error.printStackTrace()
+
                     Toast.makeText(
-                        contexto, "No se pudo iniciar la cámara",
+                        contexto,
+                        "No se pudo iniciar la cámara",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -76,28 +99,44 @@ fun VistaCamara(
 
             onDispose {
                 try {
-                    if (providerFuture.isDone) providerFuture.get().unbindAll()
+                    if (providerFuture.isDone) {
+                        providerFuture.get().unbindAll()
+                    }
                 } catch (error: Exception) {
                     error.printStackTrace()
                 }
             }
         }
 
-        AndroidView(factory = { previewView }, modifier = modifier)
+        AndroidView(
+            factory = { previewView },
+            modifier = modifier
+        )
     }
 }
+
 
 fun guardarFoto(
     contexto: Context,
     imageCapture: ImageCapture,
+    latitud: Double?,
+    longitud: Double?,
     alGuardar: (Foto) -> Unit
 ) {
-    val fecha = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val fecha = SimpleDateFormat(
+        "yyyyMMdd_HHmmss",
+        Locale.getDefault()
+    ).format(Date())
+
     val nombre = "Ruta_$fecha.jpg"
+
     val values = ContentValues().apply {
         put(MediaStore.Images.Media.DISPLAY_NAME, nombre)
         put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/RutaDeFotos")
+        put(
+            MediaStore.Images.Media.RELATIVE_PATH,
+            "Pictures/RutaDeFotos"
+        )
     }
 
     val opciones = ImageCapture.OutputFileOptions.Builder(
@@ -110,32 +149,42 @@ fun guardarFoto(
         opciones,
         ContextCompat.getMainExecutor(contexto),
         object : ImageCapture.OnImageSavedCallback {
-            override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+
+            override fun onImageSaved(
+                output: ImageCapture.OutputFileResults
+            ) {
                 val uri = output.savedUri
+
                 if (uri != null) {
+                    val foto = Foto(
+                        nombre = nombre,
+                        uri = uri.toString(),
+                        latitud = latitud ?: 0.0,
+                        longitud = longitud ?: 0.0
+                    )
+
+                    alGuardar(foto)
+
                     Toast.makeText(
-                        contexto, "¡Foto guardada en la galería!",
+                        contexto,
+                        "¡Foto guardada en la galería!",
                         Toast.LENGTH_SHORT
                     ).show()
-                    alGuardar(
-                        Foto(
-                            nombre = nombre,
-                            uri = uri.toString(),
-                            latitud = 0.0,
-                            longitud = 0.0
-                        )
-                    )
                 } else {
                     Toast.makeText(
-                        contexto, "No se obtuvo la URI de la foto",
+                        contexto,
+                        "No se obtuvo la URI de la foto",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
 
-            override fun onError(exception: ImageCaptureException) {
+            override fun onError(
+                exception: ImageCaptureException
+            ) {
                 Toast.makeText(
-                    contexto, "Error al guardar: ${exception.message}",
+                    contexto,
+                    "Error al guardar: ${exception.message}",
                     Toast.LENGTH_LONG
                 ).show()
             }

@@ -14,11 +14,15 @@ import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 import com.mapbox.maps.CameraOptions
 import com.mapbox.geojson.Point
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+import com.example.taller2movil.datos.Foto
 
 @Composable
 fun PanelMapa(
     rutaIniciada: Boolean,
-    cantidadFotos: Int,
+    fotos: List<Foto>,
     latitud: Double?,
     longitud: Double?,
     mensajeUbicacion: String,
@@ -26,6 +30,7 @@ fun PanelMapa(
     alLimpiar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var mapaListo by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier,
@@ -55,22 +60,29 @@ fun PanelMapa(
                     MapView(ctx).also { mapa ->
                         mapa.mapboxMap.loadStyle(
                             Style.MAPBOX_STREETS
-                        )
+                        ) {
+                            mapaListo = true
+                        }
                     }
                 },
                 update = { mapa ->
-                    if (latitud != null && longitud != null) {
-                        mapa.mapboxMap.setCamera(
-                            CameraOptions.Builder()
-                                .center(
-                                    Point.fromLngLat(
-                                        longitud,
-                                        latitud
+                    if (mapaListo) {
+                        if (latitud != null && longitud != null) {
+                            mapa.mapboxMap.setCamera(
+                                CameraOptions.Builder()
+                                    .center(
+                                        Point.fromLngLat(
+                                            longitud,
+                                            latitud
+                                        )
                                     )
-                                )
-                                .zoom(15.0)
-                                .build()
-                        )
+                                    .zoom(15.0)
+                                    .build()
+                            )
+                        }
+
+                        // Los marcadores se agregan
+                        // en el siguiente paso.
                     }
                 }
             )
@@ -89,7 +101,7 @@ fun PanelMapa(
 
             Spacer(Modifier.height(8.dp))
 
-            Text("Fotos registradas: $cantidadFotos")
+            Text("Fotos registradas: ${fotos.size}")
 
             Spacer(Modifier.height(8.dp))
 
